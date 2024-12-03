@@ -1,0 +1,100 @@
+I am working on Django backend project for 
+my Accounting app I am designing my 
+MySql DataBase based on my requirements at first
+I have a table for Users with (User Pk,Email,Password)
+and Budget/Capital table with (budget,date Pk)
+and I have a table for Types that takes only the type as Pk
+and Storage table with Storage as Pk
+and Supplies table linked with Storage and Types with (Supplies Pk,Countity,Storage Fk,type Fk)
+Also I have a Permanant table as name of Customer that takes (Customer Pk,bought,debt,Date)
+and Employee table with (Employee Pk,Salary,Date_of_employ)
+and table for Money Fund That have (Sells, Permanant)
+Also tables for sells and receipts and incoming_payments that have (date as primary key, information) for incoming_payments
+and (date as primary key, type Fk,supply fk,Countity,first_price,final_price) for receipts
+sells has (supply, Countity,final_price,date Pk,information) 
+and a table for inventory also takes date as Pk and (type, supply,reamined_Countity,first_price,final_price,incomes,receipts,Salaries,Customer,debt)
+now: 
+I need to create these tables and consider the follwoing:
+when we have incomming payments the value of incoming payments adds to Sells value
+when we have a receipts its value subtracts from the Permanant value and the Countity of the supply
+ Increases if the supply exists or not create new supply for specified type
+when we sell something we consider the Countity and the price then
+ then the value of the Sells increases by the value of that something and the quantity of that supply
+ decreases by the quantity specifed in the sells
+when an Employee has his Salary the value of his Salary will subtract from the value
+of Permanant fund
+the inventory of goods will be stored inside the inventory table with all specifed elements and when the inventory
+done a new budget will be added to budget user and the calculation of the budget will be added to the Permanant price to
+determine whether loss or win
+and if you have any edits just tell me you know much about accounting app
+
+-------------------------------------------------------------------------------
+I want to create an Inventory table to make an inventory audit for the supplies 
+where I have models like 
+` class Supplies(models.Model):
+    type = models.ForeignKey(Type,on_delete=models.CASCADE)
+    storage = models.ForeignKey(Storage,on_delete=models.CASCADE)
+    supply_name = models.CharField(max_length=50,primary_key=True)
+    countity = models.IntegerField()
+    buy_price = models.IntegerField()
+    sell_price = models.IntegerField()
+class CustomerName(models.Model):
+    customer_name = models.CharField(max_length=50,primary_key=True)
+    total_debt = models.IntegerField(null=True,blank=True)
+class Customer(models.Model):
+    customer_name = models.ForeignKey(CustomerName,on_delete=models.CASCADE)
+    date_of_buying = models.DateField(auto_now=True)
+    supply = models.ForeignKey(Supplies,on_delete=models.CASCADE)
+    price = models.IntegerField()
+    countity = models.IntegerField()
+    total = models.IntegerField(editable=False,default=0)
+    debt = models.IntegerField(default=0,null=True,blank=True)
+    paid = models.IntegerField(default=0,null=True,blank=True)
+    notes = models.CharField(max_length=400,null=True,blank=True)
+    def save(self,*args,**kwrgs):
+        self.total = self.countity * self.price
+        super(Customer,self).save(*args,**kwrgs)
+class MoneyFund(models.Model):
+    permanant_fund = models.IntegerField()
+    sells_fund = models.IntegerField()
+class Sell(models.Model):
+    supply = models.ForeignKey(Supplies,on_delete=models.CASCADE)
+    storage = models.ForeignKey(Storage,on_delete=models.CASCADE)
+    countity = models.IntegerField()
+    price = models.IntegerField()
+    total = models.IntegerField(editable=False,default=0)
+    date = models.DateField(auto_now=True)
+    notes = models.CharField(max_length=400,null=True,blank=True)
+    def save(self,*args,**kwrgs):
+        self.total = self.countity * self.price
+        super(Sell,self).save(*args,**kwrgs)
+class Reciept(models.Model):
+    type = models.ForeignKey(Type,on_delete=models.CASCADE)
+    supply = models.ForeignKey(Supplies,on_delete=models.CASCADE)
+    storage = models.ForeignKey(Storage,on_delete=models.CASCADE)
+    countity = models.IntegerField()
+    buy_price = models.IntegerField()
+    sell_price = models.IntegerField()
+    total = models.IntegerField(editable=False,default=0)
+    date = models.DateField(auto_now=True)
+    notes = models.CharField(max_length=400,null=True,blank=True)
+    def save(self,*args,**kwargs):
+        self.total = self.countity * self.buy_price
+        super(Reciept,self).save(*args,**kwargs)
+class MoneyIncome(models.Model):
+    money_from = models.ForeignKey(CustomerName,on_delete=models.CASCADE,null=True,blank=True)
+    total = models.IntegerField()
+    date = models.DateField(auto_now=True)
+    notes = models.CharField(max_length=400,null=True,blank=True)
+class Payment(models.Model):
+    money_for = models.CharField(max_length=250)
+    total = models.IntegerField()
+    date = models.DateField(auto_now=True)
+    notes = models.CharField(max_length=400,null=True,blank=True)
+ ` I want the inventory audit to be full report using these models all these models must be used
+and full in the inventory audit report 
+consider that if the models upove have any data when deleting the inventory
+it will only delete the edits applied like discprency and funds 
+and if the consider that no loss else we have mismatch with the given data and comparing 
+between them 
+
