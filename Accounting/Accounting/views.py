@@ -79,6 +79,7 @@ def reset_password(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def setupAccount(request,username):
+    issatup = request.data.get('issatup')
     budget = int(request.data.get('budget'))
     types = request.data.get('types',[])
     customernames = request.data.get('customers',[])
@@ -87,6 +88,7 @@ def setupAccount(request,username):
     try:
         user = User.objects.get(user_name = username)
         user.budget = budget
+        user.issatup = issatup
         user.save()
 
        

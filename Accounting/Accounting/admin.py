@@ -2,17 +2,19 @@ from django.contrib import admin
 from .models import *
 
 #Displaying The Total By Summing
-class SellAdmin(admin.ModelAdmin):
-    readonly_fields = ('total')
-    list_display = ('supply','countity','price','total','date','notes')
-    fields = ('supply','countity','price','date','notes')
+class UserAdmin(admin.ModelAdmin):
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.filter(is_superuser=False)
 
-from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from .models import User
+    exclude = ('last_login',)
+    # Customize the list display if needed
+    list_display = ('user_name', 'email','issatup', 'budget', 'password_reset_code')
+    search_fields = ('user_name', 'email')
 
 
-admin.site.register(User)
+
+admin.site.register(User, UserAdmin)
 admin.site.register(Type)
 admin.site.register(DispatchSupply)
 admin.site.register(Supplies)

@@ -29,7 +29,7 @@ class User (AbstractBaseUser,PermissionsMixin):
     # Email
     email = models.CharField(max_length=250,unique=True)
     # # Passowrd Taken from UserManager
-    # password = models.CharField(max_length=128)
+    issatup = models.BooleanField(default=False)
     # Budegt
     budget = models.IntegerField(default=0)
     # Password Reset Code
