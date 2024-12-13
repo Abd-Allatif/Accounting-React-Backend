@@ -379,7 +379,7 @@ class Sell(models.Model):
     # Supply Fk
     supply = models.ForeignKey(Supplies,on_delete=models.CASCADE)
     # Unit
-    unit = models.CharField(default="Peace")
+    unit = models.CharField(max_length=10,default="Peace")
     # Countity
     countity = models.IntegerField()
     # Price

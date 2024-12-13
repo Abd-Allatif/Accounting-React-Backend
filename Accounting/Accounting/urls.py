@@ -11,8 +11,6 @@ urlpatterns = [
     path('api/users/register/',views.register),
     path('api/users/reset-password/',views.reset_password),
     path('api/users/<str:username>/setup/',views.setupAccount,name='setup_account'),
-    path('api/users/<str:username>/',views.get_user_data),
-    path('api/users/modify/<str:username>/',views.modify_user_data),
     path('api/data/export/export-excel/<str:username>/', views.export_all_data_excel, name='export_all_data_excel'),
     path('api/data/export/export-pdf/<str:username>/', views.export_all_data_pdf, name='export_all_data_pdf'),
 
