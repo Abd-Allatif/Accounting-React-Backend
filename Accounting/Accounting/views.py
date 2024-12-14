@@ -116,6 +116,39 @@ def setupAccount(request,username):
         logger.error(f"SetupAccount error: {e}")
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
+@api_view(['POST','GET'])
+@permission_classes([IsAuthenticated])
+def manage_types(request,username):
+    try:
+        user = User.objects.get(user_name = username)
+
+        if request.method == 'POST':
+            types = request.data.get('types')
+            user_data = request.data.get('user')
+
+            if types and user_data:
+                user_instance = User.objects.get(user_name = user_data)
+                Type.objects.create(type=types,user = user_instance)
+
+            return Response({'message': 'Setup successful!'}, status=status.HTTP_200_OK)
+
+        if request.method == 'GET':
+            types = Type.objects.filter(user=user)
+            serializer = TypeSerializer(types, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+
+    except User.DoesNotExist:
+        return Response({'error': 'User not found'})
+    except Exception as e:
+        logger.error(f"SetupAccount error: {e}")
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+
 #--------------------------------------------------------------------------
 # Expoting Data
 
